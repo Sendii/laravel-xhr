@@ -18,4 +18,6 @@ Route::prefix('product')->group(function(){
 	Route::view('/', 'product.index');
 	Route::post('/get-data', 'ProductC@getData');
 	Route::post('/save', 'ProductC@save');
+	Route::post('/update', 'ProductC@update');
+	Route::post('/delete', 'ProductC@delete');
 });
