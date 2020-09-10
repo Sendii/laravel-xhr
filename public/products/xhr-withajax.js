@@ -31,9 +31,35 @@ $(document).ready(function(){
 		}
 	}
 
-	function loadData(){
+	function makePaginate(total, page_aktif){
+		var paginate = ''
+		paginate += '<li class="page-item" id="prev-page">'
+		paginate += '<a class="page-link" href="javascript:void(0)" tabindex="-1">Previous</a>'
+		paginate += '</li>'
+		for (var i = 1; i <= total; i++) {
+			paginate += '<li class="page-item" id="page-number"><a class="page-link" href="javascript:void(0)">'+i+'</a></li>'
+		}
+
+		paginate += '<li class="page-item" id="next-page">'
+		paginate += '<li class="page-item" id="next-page">'
+		paginate += '<a class="page-link" href="javascript:void(0)">Next</a>'
+		paginate += '</li>'
+
+		$('#custom-paginate').html(paginate)		
+	}
+
+	function prevPage(curPage=1){
+		var curr = $('#page-number').find('a').text(curPage)
+		alert
+	}
+
+	function loadData(page=0){
 		var xhr = glob_xhr
-		var url = glob_url + '/product/get-data'
+		var url = glob_url + '/product/get-data?page=' + page
+
+		const params = {			
+			paging: page
+		}
 
 		xhr.onloadstart = function(){
 			$('#tbody-data').html('<tr><td colspan="4" align="center">Loading...</td></tr>')
@@ -44,12 +70,14 @@ $(document).ready(function(){
 		}
 
 		xhr.onloadend = function(){
+			var itungtr = 0
 			var table = ''
 			var data = this.responseText
-			if (JSON.parse(data).length > 0) {
-				var data = JSON.parse(data)
-				var itungtr = 0
-				data.forEach( function(v, k) {
+			var list_paginate = JSON.parse(data)['total_data']
+			console.log(list_paginate)
+			var arr = JSON.parse(data)['data']
+			if (arr.length > 0) {
+				arr.forEach(function(v, k){
 					itungtr++
 					table += '<tr>'
 					table += '<td>'+v.id+'</td>'
@@ -60,19 +88,22 @@ $(document).ready(function(){
 					table += '<a href="javascript:void(0)" id="btnHapus" data-product_id='+v.id+' class="btn btn-outline-danger btn-sm">Hapus</a>'
 					table += '</td>'
 					table += '</tr>'
-				});
+
+					makePaginate(list_paginate, 2)
+				})
 			}else{
-				table = '<tr><td colspan="4" align="center">Data Kosong !</td></tr>'				
-			}			
+				table = '<tr><td colspan="4" align="center">Data Kosong !</td></tr>'	
+			}
 			$('#tbody-data').html(table)
-			$('#table-dataTable').DataTable({
-				"paging": false
-			});
+			// $('#table-dataTable').DataTable({
+			// 	"paging": false
+			// });
 		}
 
-		xhr.open("POST", url, true)
+		xhr.open("GET", url, true)
+		xhr.setRequestHeader('Content-type', 'application/json')
 		xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
-		xhr.send()
+		xhr.send(JSON.stringify(params))
 	}
 
 	function saveData(){
@@ -215,4 +246,11 @@ $(document).ready(function(){
 		deleteData($(this).data('product_id'))
 		// deleteData('99')
 	})
+
+	// for custom paginate
+	$('body').on('click', '[id^=page-number]', function(){
+		var page = $(this).find('a').text() - 1
+		loadData(page)
+	})
+	// end custom paginate
 })

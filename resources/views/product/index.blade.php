@@ -82,15 +82,19 @@
 
 	</tbody>
 </table>
+<div class="float-right my-2">
+	<ul class="pagination" id="custom-paginate">
+		<!-- <li class="page-item disabled"> -->
+		<!-- <li class="page-item active">
+			<a class="page-link" href="javascript:void(0)">2 <span class="sr-only">(current)</span></a>
+		</li> -->
+	</ul>
+</div>
 @endsection
 
 @section('scripts')
 <script src="{{asset('products/xhr-withajax.js')}}"></script>
+<!-- <script src="{{asset('products/paginate.js')}}"></script> -->
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-<script>
-	$(document).ready(function() {
-		
-	} );
-</script>
 @endsection

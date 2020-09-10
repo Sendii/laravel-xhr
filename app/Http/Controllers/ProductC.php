@@ -8,9 +8,19 @@ use App\Product as Pr;
 
 class ProductC extends Controller
 {
-    public function getData(){
-    	$data = Pr::orderBy('id', 'ASC')->get();
-    	return json_encode($data);
+    public function getData(Request $r){
+        $limit = 2;
+        $total_data = Pr::count();
+        $paging = $r->page;
+
+        $total_data = $total_data / $limit;
+        if ($paging == 0) {
+        	$data = Pr::orderBy('id', 'ASC')->skip($paging)->take($limit)->get();
+        }else{
+            $data = Pr::orderBy('id', 'ASC')->skip($paging + 1)->take($limit + 1)->get();
+        }
+        // $data = Pr::orderBy('id', 'ASC')->get();
+    	return json_encode(['data' => $data, 'total_data' => $total_data]);
     }
 
     public function save(Request $r){

@@ -28,6 +28,14 @@ class CreateProductsTable extends Migration
             [
                 'nama' => "Produk 2",
                 'harga' => 20000
+            ],
+            [
+                'nama' => "Produk 3",
+                'harga' => 30000
+            ],
+            [
+                'nama' => "Produk 4",
+                'harga' => 40000
             ]
         ]);
     }
