@@ -31,8 +31,13 @@ class ProductC extends Controller
 
     public function delete(Request $r){
         $data = Pr::find($r->id);
-        $data->delete();
+        if (!empty($data)) {
+            $data->delete();
+            return json_encode('success', 0);        
+            # code...
+        }else{
+            return json_encode('failed', 0);        
+        }
 
-        return json_encode(['message' => "success delete", "code" => 0]);        
     }
 }

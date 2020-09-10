@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+@endsection
 @section('content')
 <div class="modal fade" id="modaltambahData" tabindex="-1" role="dialog" aria-labelledby="modaltambahDataLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -66,7 +69,7 @@
 <div id="alert-successDelete" class="my-2">
 	
 </div>
-<table class="table table-hover table-bordered">
+<table class="table table-hover table-bordered" id="table-dataTable">
 	<thead>
 		<tr>
 			<th scope="col">No.</th>
@@ -83,4 +86,11 @@
 
 @section('scripts')
 <script src="{{asset('products/xhr-withajax.js')}}"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script>
+	$(document).ready(function() {
+		
+	} );
+</script>
 @endsection

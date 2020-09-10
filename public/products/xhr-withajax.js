@@ -2,6 +2,34 @@ $(document).ready(function(){
 	const glob_xhr = new XMLHttpRequest()
 	const glob_url = window.location.origin
 
+	function Capitalize(kata){
+		var myStr = kata
+		var firstChar = kata.substring(0, 1)
+		firstChar = firstChar.toUpperCase()
+
+		var tail = myStr.substring(1)
+		myStr = firstChar + tail
+		return myStr
+	}
+
+	function validationData(aksi){
+		if (aksi == "delete") {
+			$('#alert-successDelete').html('<div class="alert alert-danger">Gagal Menghapus data !</div>')
+			loadData()
+			setTimeout(function(){
+				$('#alert-success'+Capitalize(aksi)+'').hide(1000)
+				$('#alert-success'+Capitalize(aksi)+' .alert-danger').remove()
+				$('#alert-success'+Capitalize(aksi)+'').show(2000)
+			}, 5000)
+		}else{
+			$('#alert-success'+Capitalize(aksi)+'').html('<div class="alert alert-danger">Masih ada data yang kosong !</div>')
+			setTimeout(function(){
+				$('#alert-success'+Capitalize(aksi)+'').hide(1000)
+				$('#alert-success'+Capitalize(aksi)+' .alert-danger').remove()
+				$('#alert-success'+Capitalize(aksi)+'').show(2000)
+			}, 5000)		
+		}
+	}
 
 	function loadData(){
 		var xhr = glob_xhr
@@ -37,6 +65,9 @@ $(document).ready(function(){
 				table = '<tr><td colspan="4" align="center">Data Kosong !</td></tr>'				
 			}			
 			$('#tbody-data').html(table)
+			$('#table-dataTable').DataTable({
+				"paging": false
+			});
 		}
 
 		xhr.open("POST", url, true)
@@ -45,91 +76,87 @@ $(document).ready(function(){
 	}
 
 	function saveData(){
-		var xhr = new XMLHttpRequest()
-		var url = glob_url + '/product/save'
+		if ($('input[name="nama_produk"]').val() != "" && $('input[name="harga_produk"]').val() != "") {
+			var xhr = new XMLHttpRequest()
+			var url = glob_url + '/product/save'
 
-		const params = {			
-			nama: $('input[name="nama_produk"]').val(),			
-			harga: $('input[name="harga_produk"]').val()
-		}
-
-		xhr.onloadstart = function(){
-			$('#alert-successSave').html('<div class="alert alert-info">Loading ...</div>')			
-		}
-
-		xhr.onerror = function(){
-			console.log('error')
-		}
-
-		xhr.onloadend = function(){
-			console.log(this.responseText)
-			if (this.responseText != "") {				
-				$('input[name="nama_produk"]').val('')				
-				$('input[name="harga_produk"]').val()				
-				$('#alert-successSave').html('<div class="alert alert-success">Berhasil menambah data !</div>')
-				loadData()
-				setTimeout(function(){
-					$('.alert-success').hide(1000)
-				}, 5000)
+			const params = {			
+				nama: $('input[name="nama_produk"]').val(),			
+				harga: $('input[name="harga_produk"]').val()
 			}
-		}
 
-		xhr.open("POST", url, true)
-		xhr.setRequestHeader('Content-type', 'application/json')
-		xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));			
-		xhr.send(JSON.stringify(params))
+			xhr.onloadstart = function(){
+				$('#alert-successSave').html('<div class="alert alert-info">Loading ...</div>')			
+			}
+
+			xhr.onerror = function(){
+				console.log('error')
+			}
+
+			xhr.onloadend = function(){
+				console.log(this.responseText)
+				if (this.responseText != "") {				
+					$('input[name="nama_produk"]').val('')				
+					$('input[name="harga_produk"]').val('')				
+					$('#alert-successSave').html('<div class="alert alert-success">Berhasil menambah data !</div>')
+					loadData()
+					setTimeout(function(){
+						$('.alert-success').hide(1000)
+					}, 5000)
+				}
+			}
+
+			xhr.open("POST", url, true)
+			xhr.setRequestHeader('Content-type', 'application/json')
+			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));			
+			xhr.send(JSON.stringify(params))
+		}else{
+			validationData('save')
+		}
 	}
 
 	function updateData(){
-		var xhr = new XMLHttpRequest()
-		var url = glob_url + '/product/update'
+		if ($('input[name="edit_nama_produk"]').val() != "" && $('input[name="edit_harga_produk"]').val() != ""){
+			var xhr = new XMLHttpRequest()
+			var url = glob_url + '/product/update'
 
-		const params = {
-			id: $('input[name="edit_id_produk"]').val(),			
-			nama: $('input[name="edit_nama_produk"]').val(),			
-			harga: $('input[name="edit_harga_produk"]').val()
-		}
-
-		xhr.onloadstart = function(){
-			$('#alert-successUpdate').html('<div class="alert alert-info">Loading ...</div>')			
-		}
-
-		xhr.onerror = function(){
-			console.log('error')
-		}
-
-		xhr.onloadend = function(){
-			console.log(this.responseText)
-			if (this.responseText != "") {				
-				$('input[name="nama_produk"]').val('')				
-				$('input[name="harga_produk"]').val('')				
-				$('#alert-successUpdate').html('<div class="alert alert-success">Berhasil update data !</div>')
-				loadData()
-				setTimeout(function(){
-					$('.alert-success').hide(1000)
-				}, 5000)
+			const params = {
+				id: $('input[name="edit_id_produk"]').val(),			
+				nama: $('input[name="edit_nama_produk"]').val(),			
+				harga: $('input[name="edit_harga_produk"]').val()
 			}
-		}
 
-		xhr.open("POST", url, true)
-		xhr.setRequestHeader('Content-type', 'application/json')
-		xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));			
-		xhr.send(JSON.stringify(params))
+			xhr.onloadstart = function(){
+				$('#alert-successUpdate').html('<div class="alert alert-info">Loading ...</div>')			
+			}
+
+			xhr.onerror = function(){
+				console.log('error')
+			}
+
+			xhr.onloadend = function(){
+				console.log(this.responseText)
+				if (this.responseText != "") {				
+					$('input[name="nama_produk"]').val('')				
+					$('input[name="harga_produk"]').val('')				
+					$('#alert-successUpdate').html('<div class="alert alert-success">Berhasil update data !</div>')
+					loadData()
+					setTimeout(function(){
+						$('.alert-success').hide(1000)
+					}, 5000)
+				}
+			}
+
+			xhr.open("POST", url, true)
+			xhr.setRequestHeader('Content-type', 'application/json')
+			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));			
+			xhr.send(JSON.stringify(params))
+		}else{
+			validationData('update')
+		}
 	}
 
 	loadData()
-
-	$('#modaltambahData').keypress(function(event){
-		var keycode = event.which
-		if ($('input[name="nama_produk"]').val() != "" && $('input[name="harga_produk"]').val() != "") {
-			if(keycode == '13'){
-				saveData()
-				$('#alert-successSave').hide(1000)
-			}
-		}else{
-			$('#alert-successSave').html('<div class="alert alert-danger">Masih ada data yang kosong !</div>')			
-		}
-	})
 
 	$('#btn-saveData').click(function(){
 		saveData()
@@ -165,13 +192,16 @@ $(document).ready(function(){
 		}
 
 		xhr.onloadend = function(){
-			console.log(this.responseText)
-			if (this.responseText != "") {				
+			var cek = JSON.parse(this.responseText)
+			console.log(cek)
+			if (cek == "success") {				
 				$('#alert-successDelete').html('<div class="alert alert-success">Berhasil Menghapus data !</div>')
 				loadData()
 				setTimeout(function(){
 					$('.alert-success').hide(1000)
 				}, 5000)
+			}else{
+				validationData('delete')
 			}
 		}
 
@@ -183,5 +213,6 @@ $(document).ready(function(){
 
 	$('body').on('click', '#btnHapus', function(){
 		deleteData($(this).data('product_id'))
+		// deleteData('99')
 	})
 })
