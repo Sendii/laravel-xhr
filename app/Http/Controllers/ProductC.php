@@ -17,7 +17,7 @@ class ProductC extends Controller
         if ($paging == 0) {
         	$data = Pr::orderBy('id', 'ASC')->skip($paging)->take($limit)->get();
         }else{
-            $data = Pr::orderBy('id', 'ASC')->skip($paging + 1)->take($limit + 1)->get();
+            $data = Pr::orderBy('id', 'ASC')->skip($paging + 1)->take($limit)->get();
         }
         // $data = Pr::orderBy('id', 'ASC')->get();
     	return json_encode(['data' => $data, 'total_data' => $total_data]);

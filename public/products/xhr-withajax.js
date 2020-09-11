@@ -3,6 +3,7 @@ $(document).ready(function(){
 	const glob_url = window.location.origin
 
 	var curr_page = 1
+	var last_page = ''
 
 	function Capitalize(kata){
 		var myStr = kata
@@ -43,13 +44,18 @@ $(document).ready(function(){
 		}
 
 		paginate += '<li class="page-item" id="next-page">'
-		paginate += '<li class="page-item" id="next-page">'
 		paginate += '<a class="page-link" href="javascript:void(0)">Next</a>'
 		paginate += '</li>'
 
 		$('#custom-paginate').html(paginate)
 		activePage(curr_page)
-		disabledButton()
+		console.log('current: '+curr_page)
+		console.log('last: '+last_page)
+		if (curr_page != last_page) {			
+			disabledButton('first')
+		}else{
+			disabledButton('last')
+		}
 	}	
 
 	function activePage(page){
@@ -57,20 +63,32 @@ $(document).ready(function(){
 		// .addClass('active')
 	}
 
-	console.log(curr_page)
-	function disabledButton(){
-		if (curr_page == 1) {
-			$('#prev-page').addClass('disabled')
-		}
+	function disabledButton(param='first'){
+		if (param == "first") {
+			if (curr_page == 1) {
+				$('#prev-page').addClass('disabled')
+			}
+		}else{
+			console.log('eaea')
+			$('#next-page').addClass('disabled')
+		}	
 	}
 
 	// prev page
 	$('body').on('click', '[id=prev-page]', function(){
 		if (curr_page > 1) {				
-			console.log('ea')
-			console.log('page:' + curr_page)
 			loadData(curr_page - 2)
 			curr_page = curr_page - 1
+			activePage(curr_page)
+		}
+	})
+
+	// next page
+	$('body').on('click', '[id=next-page]', function(){
+		if (curr_page <= last_page) {		
+			console.log('baru:'+curr_page)		
+			loadData(curr_page)			
+			curr_page = curr_page + 1
 			activePage(curr_page)
 		}
 	})
@@ -97,6 +115,7 @@ $(document).ready(function(){
 			var data = this.responseText
 			var list_paginate = JSON.parse(data)['total_data']
 			var arr = JSON.parse(data)['data']
+			last_page = arr.length
 			if (arr.length > 0) {
 				arr.forEach(function(v, k){
 					itungtr++
@@ -151,6 +170,7 @@ $(document).ready(function(){
 					$('input[name="harga_produk"]').val('')				
 					$('#alert-successSave').html('<div class="alert alert-success">Berhasil menambah data !</div>')
 					loadData()
+					activePage(1)
 					setTimeout(function(){
 						$('.alert-success').hide(1000)
 					}, 5000)
