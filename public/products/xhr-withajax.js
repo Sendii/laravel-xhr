@@ -2,6 +2,8 @@ $(document).ready(function(){
 	const glob_xhr = new XMLHttpRequest()
 	const glob_url = window.location.origin
 
+	var curr_page = 1
+
 	function Capitalize(kata){
 		var myStr = kata
 		var firstChar = kata.substring(0, 1)
@@ -31,13 +33,13 @@ $(document).ready(function(){
 		}
 	}
 
-	function makePaginate(total, page_aktif){
+	function makePaginate(total){
 		var paginate = ''
 		paginate += '<li class="page-item" id="prev-page">'
 		paginate += '<a class="page-link" href="javascript:void(0)" tabindex="-1">Previous</a>'
 		paginate += '</li>'
 		for (var i = 1; i <= total; i++) {
-			paginate += '<li class="page-item" id="page-number"><a class="page-link" href="javascript:void(0)">'+i+'</a></li>'
+			paginate += '<li class="page-item" id="page-number"><a class="page-link" href="javascript:void(0)" data-page="'+i+'">'+i+'</a></li>'
 		}
 
 		paginate += '<li class="page-item" id="next-page">'
@@ -45,13 +47,33 @@ $(document).ready(function(){
 		paginate += '<a class="page-link" href="javascript:void(0)">Next</a>'
 		paginate += '</li>'
 
-		$('#custom-paginate').html(paginate)		
+		$('#custom-paginate').html(paginate)
+		activePage(curr_page)
+		disabledButton()
+	}	
+
+	function activePage(page){
+		$('.page-link[data-page="'+page+'"]').parent().addClass('active')
+		// .addClass('active')
 	}
 
-	function prevPage(curPage=1){
-		var curr = $('#page-number').find('a').text(curPage)
-		alert
+	console.log(curr_page)
+	function disabledButton(){
+		if (curr_page == 1) {
+			$('#prev-page').addClass('disabled')
+		}
 	}
+
+	// prev page
+	$('body').on('click', '[id=prev-page]', function(){
+		if (curr_page > 1) {				
+			console.log('ea')
+			console.log('page:' + curr_page)
+			loadData(curr_page - 2)
+			curr_page = curr_page - 1
+			activePage(curr_page)
+		}
+	})
 
 	function loadData(page=0){
 		var xhr = glob_xhr
@@ -74,7 +96,6 @@ $(document).ready(function(){
 			var table = ''
 			var data = this.responseText
 			var list_paginate = JSON.parse(data)['total_data']
-			console.log(list_paginate)
 			var arr = JSON.parse(data)['data']
 			if (arr.length > 0) {
 				arr.forEach(function(v, k){
@@ -89,8 +110,8 @@ $(document).ready(function(){
 					table += '</td>'
 					table += '</tr>'
 
-					makePaginate(list_paginate, 2)
 				})
+				makePaginate(list_paginate)
 			}else{
 				table = '<tr><td colspan="4" align="center">Data Kosong !</td></tr>'	
 			}
@@ -125,7 +146,6 @@ $(document).ready(function(){
 			}
 
 			xhr.onloadend = function(){
-				console.log(this.responseText)
 				if (this.responseText != "") {				
 					$('input[name="nama_produk"]').val('')				
 					$('input[name="harga_produk"]').val('')				
@@ -166,7 +186,6 @@ $(document).ready(function(){
 			}
 
 			xhr.onloadend = function(){
-				console.log(this.responseText)
 				if (this.responseText != "") {				
 					$('input[name="nama_produk"]').val('')				
 					$('input[name="harga_produk"]').val('')				
@@ -224,7 +243,6 @@ $(document).ready(function(){
 
 		xhr.onloadend = function(){
 			var cek = JSON.parse(this.responseText)
-			console.log(cek)
 			if (cek == "success") {				
 				$('#alert-successDelete').html('<div class="alert alert-success">Berhasil Menghapus data !</div>')
 				loadData()
@@ -250,6 +268,7 @@ $(document).ready(function(){
 	// for custom paginate
 	$('body').on('click', '[id^=page-number]', function(){
 		var page = $(this).find('a').text() - 1
+		curr_page = page + 1
 		loadData(page)
 	})
 	// end custom paginate
