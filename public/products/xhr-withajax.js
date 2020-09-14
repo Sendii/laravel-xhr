@@ -51,9 +51,9 @@ $(document).ready(function(){
 		activePage(curr_page)
 		console.log('current: '+curr_page)
 		console.log('last: '+last_page)
-		if (curr_page != last_page) {			
+		if (curr_page == 1) {			
 			disabledButton('first')
-		}else{
+		}else if(curr_page == last_page){
 			disabledButton('last')
 		}
 	}	
@@ -69,7 +69,6 @@ $(document).ready(function(){
 				$('#prev-page').addClass('disabled')
 			}
 		}else{
-			console.log('eaea')
 			$('#next-page').addClass('disabled')
 		}	
 	}
@@ -85,8 +84,7 @@ $(document).ready(function(){
 
 	// next page
 	$('body').on('click', '[id=next-page]', function(){
-		if (curr_page <= last_page) {		
-			console.log('baru:'+curr_page)		
+		if (curr_page < last_page) {		
 			loadData(curr_page)			
 			curr_page = curr_page + 1
 			activePage(curr_page)
@@ -115,7 +113,8 @@ $(document).ready(function(){
 			var data = this.responseText
 			var list_paginate = JSON.parse(data)['total_data']
 			var arr = JSON.parse(data)['data']
-			last_page = arr.length
+			console.log(JSON.parse(data))
+			last_page = list_paginate
 			if (arr.length > 0) {
 				arr.forEach(function(v, k){
 					itungtr++

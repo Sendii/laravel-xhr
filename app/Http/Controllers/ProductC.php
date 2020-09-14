@@ -11,16 +11,24 @@ class ProductC extends Controller
     public function getData(Request $r){
         $limit = 2;
         $total_data = Pr::count();
+        $total_data2 = Pr::count();
         $paging = $r->page;
+        $mod = $total_data % $limit;
 
-        $total_data = $total_data / $limit;
+
+        if($mod == 0){
+            $total_data = $total_data / $limit;
+        }else{
+            $total_data = $total_data / $limit + 0.5;            
+        }
+        //kalau data pertama
         if ($paging == 0) {
         	$data = Pr::orderBy('id', 'ASC')->skip($paging)->take($limit)->get();
-        }else{
+        } else{
             $data = Pr::orderBy('id', 'ASC')->skip($paging + 1)->take($limit)->get();
         }
         // $data = Pr::orderBy('id', 'ASC')->get();
-    	return json_encode(['data' => $data, 'total_data' => $total_data]);
+        return json_encode(['data' => $data, 'total_data' => $total_data]);
     }
 
     public function save(Request $r){

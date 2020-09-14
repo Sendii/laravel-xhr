@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    return redirect('/product');
 });
 Route::prefix('product')->group(function(){
 	Route::view('/', 'product.index');
