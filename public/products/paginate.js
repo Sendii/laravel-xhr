@@ -1,5 +1,5 @@
-var curr_page = 1
-var last_page = ''
+curr_page = pagination.curr_page
+last_page = pagination.last_page
 
 function makePaginate(total){
 	var paginate = ''
@@ -27,33 +27,14 @@ function makePaginate(total){
 
 function activePage(page){
 	$('.page-link[data-page="'+page+'"]').parent().addClass('active')
-		// .addClass('active')
-	}
+}
 
-	function disabledButton(param='first'){
-		if (param == "first") {
-			if (curr_page == 1) {
-				$('#prev-page').addClass('disabled')
-			}
-		}else{
-			$('#next-page').addClass('disabled')
-		}	
-	}
-
-	// prev page
-	$('body').on('click', '[id=prev-page]', function(){
-		if (curr_page > 1) {				
-			loadData(curr_page - 2)
-			curr_page = curr_page - 1
-			activePage(curr_page)
+function disabledButton(param='first'){
+	if (param == "first") {
+		if (curr_page == 1) {
+			$('#prev-page').addClass('disabled')
 		}
-	})
-
-	// next page
-	$('body').on('click', '[id=next-page]', function(){
-		if (curr_page < last_page) {		
-			loadData(curr_page)			
-			curr_page = curr_page + 1
-			activePage(curr_page)
-		}
-	})
+	}else{
+		$('#next-page').addClass('disabled')
+	}	
+}	

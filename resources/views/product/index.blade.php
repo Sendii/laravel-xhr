@@ -66,6 +66,9 @@
 	</div>
 </div>
 <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm my-2" data-toggle="modal" data-target="#modaltambahData">Tambah Data</a>
+<div class="float-right">
+	<input type="text" class="form-control" id="input-cari-data" placeholder="Cari Data">
+</div>
 <div id="alert-successDelete" class="my-2">
 	
 </div>
@@ -93,6 +96,8 @@
 @endsection
 
 @section('scripts')
+<script src="{{asset('products/paginate_variable.js')}}"></script>
+<script src="{{asset('products/paginate.js')}}"></script>
 <script src="{{asset('products/xhr-withajax.js')}}"></script>
 <!-- <script src="{{asset('products/paginate.js')}}"></script> -->
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>

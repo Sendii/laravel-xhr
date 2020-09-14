@@ -2,8 +2,8 @@ $(document).ready(function(){
 	const glob_xhr = new XMLHttpRequest()
 	const glob_url = window.location.origin
 
-	var curr_page = 1
-	var last_page = ''
+	curr_page = pagination.curr_page
+	last_page = pagination.last_page
 
 	function Capitalize(kata){
 		var myStr = kata
@@ -32,64 +32,7 @@ $(document).ready(function(){
 				$('#alert-success'+Capitalize(aksi)+'').show(2000)
 			}, 5000)		
 		}
-	}
-
-	function makePaginate(total){
-		var paginate = ''
-		paginate += '<li class="page-item" id="prev-page">'
-		paginate += '<a class="page-link" href="javascript:void(0)" tabindex="-1">Previous</a>'
-		paginate += '</li>'
-		for (var i = 1; i <= total; i++) {
-			paginate += '<li class="page-item" id="page-number"><a class="page-link" href="javascript:void(0)" data-page="'+i+'">'+i+'</a></li>'
-		}
-
-		paginate += '<li class="page-item" id="next-page">'
-		paginate += '<a class="page-link" href="javascript:void(0)">Next</a>'
-		paginate += '</li>'
-
-		$('#custom-paginate').html(paginate)
-		activePage(curr_page)
-		console.log('current: '+curr_page)
-		console.log('last: '+last_page)
-		if (curr_page == 1) {			
-			disabledButton('first')
-		}else if(curr_page == last_page){
-			disabledButton('last')
-		}
 	}	
-
-	function activePage(page){
-		$('.page-link[data-page="'+page+'"]').parent().addClass('active')
-		// .addClass('active')
-	}
-
-	function disabledButton(param='first'){
-		if (param == "first") {
-			if (curr_page == 1) {
-				$('#prev-page').addClass('disabled')
-			}
-		}else{
-			$('#next-page').addClass('disabled')
-		}	
-	}
-
-	// prev page
-	$('body').on('click', '[id=prev-page]', function(){
-		if (curr_page > 1) {				
-			loadData(curr_page - 2)
-			curr_page = curr_page - 1
-			activePage(curr_page)
-		}
-	})
-
-	// next page
-	$('body').on('click', '[id=next-page]', function(){
-		if (curr_page < last_page) {		
-			loadData(curr_page)			
-			curr_page = curr_page + 1
-			activePage(curr_page)
-		}
-	})
 
 	function loadData(page=0){
 		var xhr = glob_xhr
@@ -100,7 +43,7 @@ $(document).ready(function(){
 		}
 
 		xhr.onloadstart = function(){
-			$('#tbody-data').html('<tr><td colspan="4" align="center">Loading...</td></tr>')
+			$('#tbody-data').html('<tr><td colspan="4" align="center"><img src="https://flevix.com/wp-content/uploads/2019/07/Ring-Loading-1.gif" style="height: 170px;"></img></td></tr>')
 		}
 
 		xhr.onerror = function(){
@@ -143,7 +86,7 @@ $(document).ready(function(){
 		xhr.setRequestHeader('Content-type', 'application/json')
 		xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		xhr.send(JSON.stringify(params))
-	}
+	}	
 
 	function saveData(){
 		if ($('input[name="nama_produk"]').val() != "" && $('input[name="harga_produk"]').val() != "") {
@@ -277,11 +220,15 @@ $(document).ready(function(){
 		xhr.setRequestHeader('Content-type', 'application/json')
 		xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));			
 		xhr.send(JSON.stringify(params))
-	}
+	}	
 
 	$('body').on('click', '#btnHapus', function(){
 		deleteData($(this).data('product_id'))
 		// deleteData('99')
+	})
+
+	$('#input-cari-data').change(function(){
+		alert('eaea')
 	})
 
 	// for custom paginate
@@ -289,6 +236,24 @@ $(document).ready(function(){
 		var page = $(this).find('a').text() - 1
 		curr_page = page + 1
 		loadData(page)
+	})
+
+	// prev page
+	$('body').on('click', '[id=prev-page]', function(){
+		if (curr_page > 1) {				
+			loadData(curr_page - 2)
+			curr_page = curr_page - 1
+			activePage(curr_page)
+		}
+	})
+
+	// next page
+	$('body').on('click', '[id=next-page]', function(){
+		if (curr_page < last_page) {		
+			loadData(curr_page)			
+			curr_page = curr_page + 1
+			activePage(curr_page)
+		}
 	})
 	// end custom paginate
 })
